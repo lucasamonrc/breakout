@@ -5,7 +5,7 @@ local highlighted = 1
 function StartState:update(dt)
     if love.keyboard.wasPressed('up') or love.keyboard.wasPressed('down') then
         highlighted = highlighted == 1 and 2 or 1
-        gSounds['paddle-hit']:play()
+        Sounds['paddle-hit']:play()
     end
 
     if love.keyboard.wasPressed('escape') then
@@ -14,11 +14,11 @@ function StartState:update(dt)
 end
 
 function StartState:render()
-    love.graphics.setFont(gFonts['large'])
+    love.graphics.setFont(Fonts['large'])
     love.graphics.printf("BREAKOUT", 0, VIRTUAL_HEIGHT / 3,
         VIRTUAL_WIDTH, 'center')
 
-    love.graphics.setFont(gFonts['medium'])
+    love.graphics.setFont(Fonts['medium'])
 
     if highlighted == 1 then
         love.graphics.setColor(103 / 255, 1, 1, 1)

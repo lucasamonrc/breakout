@@ -1,5 +1,11 @@
 require 'src.Dependencies'
 
+local function displayFPS()
+    love.graphics.setFont(Fonts['small'])
+    love.graphics.setColor(0, 1, 0, 1)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 5, 5)
+end
+
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -7,13 +13,13 @@ function love.load()
 
     love.window.setTitle("Breakout")
 
-    gFonts = {
+    Fonts = {
         ['small'] = love.graphics.newFont('assets/fonts/font.ttf', 8),
         ['medium'] = love.graphics.newFont('assets/fonts/font.ttf', 16),
         ['large'] = love.graphics.newFont('assets/fonts/font.ttf', 32)
     }
 
-    gTextures = {
+    Textures = {
         ['background'] = love.graphics.newImage('assets/sprites/background.png'),
         ['main'] = love.graphics.newImage('assets/sprites/breakout.png'),
         ['arrows'] = love.graphics.newImage('assets/sprites/arrows.png'),
@@ -27,7 +33,7 @@ function love.load()
         resizable = true
     })
 
-    gSounds = {
+    Sounds = {
         ['paddle-hit'] = love.audio.newSource('assets/sounds/paddle_hit.wav', 'static'),
         ['score'] = love.audio.newSource('assets/sounds/score.wav', 'static'),
         ['wall-hit'] = love.audio.newSource('assets/sounds/wall_hit.wav', 'static'),
@@ -45,11 +51,11 @@ function love.load()
         ['music'] = love.audio.newSource('assets/sounds/music.wav', 'static')
     }
 
-    gStateMachine = StateMachine {
+    State = StateMachine {
         ['start'] = function() return StartState() end
     }
 
-    gStateMachine:change('start')
+    State:change('start')
 
     love.keyboard.keysPressed = {}
 end
@@ -59,7 +65,7 @@ function love.resize(w, h)
 end
 
 function love.update(dt)
-    gStateMachine:update(dt)
+    State:update(dt)
 
     love.keyboard.keysPressed = {}
 end
@@ -75,25 +81,19 @@ end
 function love.draw()
     push:start()
 
-    local bgWidth = gTextures['background']:getWidth()
-    local bgHeight = gTextures['background']:getHeight()
+    local bgWidth = Textures['background']:getWidth()
+    local bgHeight = Textures['background']:getHeight()
 
     love.graphics.draw(
-        gTextures['background'],
+        Textures['background'],
         0, 0, 0,
         VIRTUAL_WIDTH / (bgWidth - 1),
         VIRTUAL_HEIGHT / (bgHeight - 1)
     )
 
-    gStateMachine:render()
+    State:render()
 
     displayFPS()
 
     push:finish()
-end
-
-function displayFPS()
-    love.graphics.setFont(gFonts['small'])
-    love.graphics.setColor(0, 1, 0, 1)
-    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 5, 5)
 end
